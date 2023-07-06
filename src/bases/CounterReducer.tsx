@@ -9,9 +9,9 @@ interface CounterState {
 }
 
 const INITIAL_STATE: CounterState = {
-  counter: 10,
-  previous: 20,
-  changes: 30
+  counter: 0,
+  previous: 0,
+  changes: 0
 };
 
 type CounterAction = 
@@ -27,23 +27,44 @@ const counterReducer = ( state: CounterState, action: CounterAction ): CounterSt
         previous: 0,
       }
   
+    case 'increaseBy':
+      return {
+        changes: state.changes + 1,
+        counter: state.counter + action.payload.value,
+        previous: state.counter,
+      }
+  
     default:
       return state;
   }
 }
 
 export const CounterReducer = () => {
-  const [ { counter }, dispatch ] = useReducer( counterReducer, INITIAL_STATE );
+  const [ counterState, dispatch ] = useReducer( counterReducer, INITIAL_STATE );
 
-  const handleClick = () => {
+  const handleReset = () => {
     dispatch({ type: 'reset' })
+  }
+
+  const handleIncreaseBy = ( value: number ) => {
+    dispatch({ type: 'increaseBy', payload: { value } });
   }
 
   return (
     <>
-      <h1>CounterReducer: { counter }</h1>
+      <h1>Counter Reducer</h1>
+      <pre>{ JSON.stringify( counterState, null, 2 ) }</pre>
 
-      <button onClick={ handleClick }>
+      <button onClick={ () => handleIncreaseBy( 1 ) }>
+        +1 
+      </button>
+      <button onClick={ () => handleIncreaseBy( 5 ) }>
+        +5
+      </button>
+      <button onClick={ () => handleIncreaseBy( 10 ) }>
+        +10
+      </button>
+      <button onClick={ handleReset }>
         reset
       </button>
     </>
